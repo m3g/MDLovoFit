@@ -18,7 +18,7 @@ FORTRAN = gfortran
 #
 # Change the flags of the compilation if you want:
 #
-FLAGS = -O3 -ffast-math -Wunused
+FLAGS = -O3 -ffast-math
 #FLAGS = -Wunused -fbounds-check 
 #
 # Source files:
@@ -34,9 +34,11 @@ all : $(BIN)/mdlovofit $(BIN)/user_field.tcl \
 #
 # mdlovofit
 #
+$(BIN)/mdlovofit : $(OBJ)/common.o $(OBJ)/lib.o $(OBJ)/mdlovofit.o $(BIN)/user_field.tcl
+	$(FORTRAN) $(FLAGS) -o $(BIN)/mdlovofit $(OBJ)/common.o $(OBJ)/mdlovofit.o $(OBJ)/lib.o
 
-$(BIN)/mdlovofit : $(OBJ)/common.o $(OBJ)/mdlovofit.o $(BIN)/user_field.tcl
-	$(FORTRAN) $(FLAGS) -o $(BIN)/mdlovofit $(OBJ)/common.o $(OBJ)/mdlovofit.o
+$(OBJ)/lib.o : $(SRC)/lib.f90 
+	$(FORTRAN) $(FLAGS) -std=legacy -c -o $(OBJ)/lib.o $(SRC)/lib.f90
 
 $(OBJ)/mdlovofit.o : $(SRC)/mdlovofit.f90
 	$(FORTRAN) $(FLAGS) -c -o $(OBJ)/mdlovofit.o $(SRC)/mdlovofit.f90

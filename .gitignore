@@ -6,7 +6,7 @@
 *.lo
 *.o
 *.obj
-obj/*
+#obj/*
 
 # Precompiled Headers
 *.gch
@@ -31,6 +31,5 @@ obj/*
 *.exe
 *.out
 *.app
-bin/*
-
-
+bin/mdlovofit
+bin/user_field.tcl

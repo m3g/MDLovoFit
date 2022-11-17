@@ -57,7 +57,7 @@ program mdlovofit
   character(len=30), allocatable :: pdbstring_left(:), pdbstring_right(:)
   character(len=4), allocatable :: atomtypes(:)
   
-  logical :: printperframe, mapfrac, first_bije, print_rmsf, fileexists
+  logical :: printperframe, mapfrac, first_bije, print_rmsf, fileexists, endline
   logical, allocatable :: consider(:)
   
   write(*,"(a)") "#"
@@ -235,6 +235,7 @@ program mdlovofit
              "-mapstep", &
              "-ntrial", &
              "-rmsf", &
+             "-iref", &
              "-atomsfile" ) 
         i = i + 2
       case ( "-perframe" ,&
@@ -253,9 +254,7 @@ program mdlovofit
   end do
   write(*,"( a )") "#"
   
-  ! Reading first frame of the first trajectory to determine the
-  ! number of atoms
-  
+  ! Reading first frame of the first trajectory to determine the number of atoms
   open(10,file=pdbfile(1),status="old",action="read",iostat=ioerror)
   if ( ioerror /= 0 ) then
     write(*,"( a,a )") " ERROR: Could not open PDB file: ", trim(adjustl(pdbfile(1)))
@@ -286,13 +285,11 @@ program mdlovofit
   !
   ! Now determining which atoms will be considered for the alignment
   !
-
   do i = 1, nall
     consider(i) = .false.
   end do
  
   ! From the user-defined command-line-argument selection 
-
   nc = 0
   i = 0
   do
@@ -317,7 +314,6 @@ program mdlovofit
   close(10)
 
   ! From the atom selection file
-
   if ( fileexists ) then
     open(10,file=atomsfile,status="old",iostat=ioerror)
     if ( ioerror /= 0 ) then
@@ -374,20 +370,40 @@ program mdlovofit
   ! Reading the reference frame, now to save the reference coordinates,
   ! compute the baricenter of the reference CA coordinates. Also using
   ! this loop to read the strings of the PDB file for later printing
-  
-  open(10,file=pdbfile(1),status="old",action="read",iostat=ioerror)
-  if ( ioerror /= 0 ) then
-    write(*,"( a,a )") " ERROR: Could not open PDB file: ", trim(adjustl(pdbfile(i)))
-    write(*,"( a )") " Note: The PDB input files must be the last parameters of the command line."
-    stop
-  end if
-  ic = 0
-  iall = 0
-  do i = 1, iref
-    do 
+  ipdb = 0
+  ioerror = 1
+  i = 1
+  endline = .false.
+  do while(i <= iref)
+    ipdb = ipdb + 1
+    if(ipdb > size(pdbfile) .or. i > iref) then
+      write(*,*) "ERROR: -iref pointed to a frame that is not available."
+      stop
+    end if
+    open(10,file=pdbfile(ipdb),status="old",action="read",iostat=ioerror)
+    if ( ioerror /= 0 ) then
+      write(*,"( a,a )") " ERROR: Could not open PDB file: ", trim(adjustl(pdbfile(i)))
+      write(*,"( a )") " Note: The PDB input files must be the last parameters of the command line."
+      stop
+    end if
+    ic = 0
+    iall = 0
+    do while(i <= iref) 
       read(10,"( a200 )",iostat=ioerror) record
-      if ( ioerror /= 0 ) exit
-      if ( record(1:3) == "END" ) exit
+      if ( ioerror /= 0 ) then
+        if ( .not. endline ) i = i + 1
+        close(10)
+        exit
+      end if
+      if ( record(1:3) == "END" ) then
+        ic = 0
+        iall = 0
+        i = i + 1
+        endline = .true.
+        cycle
+      else
+        endline = .false.
+      end if
       if ( record(1:4) == "ATOM" .or. &
           record(1:6) == "HETATM" ) then
         iall = iall + 1
@@ -416,7 +432,6 @@ program mdlovofit
       end if
     end do
   end do
-  close(10)
   
   ! Open output files
   
@@ -434,7 +449,7 @@ program mdlovofit
     frac = 0.d0
     av_rmsd_low_last = 0.d0
   end if
-  map_fractions : do while( frac <= 1.d0 )
+  map_fractions : do while( frac <= 2.d0 )
   
     if ( mapfrac ) frac = frac + mapstep
     n_consider = min(nc,int(frac*nc))

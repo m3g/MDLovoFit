@@ -18,8 +18,10 @@ FORTRAN = gfortran
 #
 # Change the flags of the compilation if you want:
 #
-FLAGS = -O3 -ffast-math
-#FLAGS = -Wunused -fbounds-check 
+FLAGS = -O3 -march=native -ffast-math -funroll-loops
+ifeq ($(MAKECMDGOALS),devel)
+FLAGS = -Wall -fcheck=bounds -g -fbacktrace -ffpe-trap=zero,overflow,underflow
+endif
 #
 # Source files:
 SRC=./src
@@ -28,8 +30,9 @@ OBJ=./obj
 # Executable files
 BIN=./bin
 
-all : $(BIN)/mdlovofit $(BIN)/user_field.tcl \
-      warning
+all : $(BIN)/mdlovofit $(BIN)/user_field.tcl warning
+
+devel : $(BIN)/mdlovofit $(BIN)/user_field.tcl warning 
 
 #
 # mdlovofit

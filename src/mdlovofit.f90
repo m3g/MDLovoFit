@@ -6,7 +6,7 @@
 ! L. Martinez, Sep 16, 2013
 ! Institute of Chemistry, State University of Campinas - UNICAMP
 !
-! Home-Page: http://leandro.iqm.unicamp.br/mdlovofit
+! Home-Page: http://m3g.iqm.unicamp.br/mdlovofit
 !
 ! Run with: mdlovofit -f [fraction] -t align.pdb file1.pdb file2.pdb file3.pdb ...
 !
@@ -61,7 +61,7 @@ program mdlovofit
   logical, allocatable :: consider(:)
   
   write(*,"(a)") "#"
-  write(*,"(a)") "# MDLovoFit - Version 20.0.0"
+  write(*,"(a)") "# MDLovoFit - Version 20.0.1"
   write(*,"(a)") "#"
   
   ! Reading input parameters

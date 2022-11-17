@@ -33,3 +33,11 @@ obj/*
 *.app
 bin/mdlovofit
 bin/user_field.tcl
+tests/output.pdb
+.gitignore
+tests/splitaa
+.gitignore
+tests/rmsd.dat
+tests/splitab
+tests/splitac
+tests/splitad

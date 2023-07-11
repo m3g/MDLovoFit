@@ -18,7 +18,7 @@ FORTRAN = gfortran
 #
 # Change the flags of the compilation if you want:
 #
-FLAGS = -O3 -march=native -ffast-math -funroll-loops
+FLAGS = -O3 
 ifeq ($(MAKECMDGOALS),devel)
 FLAGS = -Wall -fcheck=bounds -g -fbacktrace -ffpe-trap=zero,overflow,underflow
 endif

@@ -1,3 +1,6 @@
+# CMake files
+CMakeFiles/*
+
 # Prerequisites
 *.d
 
@@ -41,3 +44,11 @@ tests/rmsd.dat
 tests/splitab
 tests/splitac
 tests/splitad
+cmake_install.cmake
+.gitignore
+.gitignore
+Makefile
+.gitignore
+CMakeCache.txt
+Makefile
+Makefile

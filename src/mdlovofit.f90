@@ -158,9 +158,7 @@ program mdlovofit
   end do
 
   if ( .not. mapfrac ) then
-    if ( frac == 0.d0 .or. &
-         trajfile == "NONE" .or. &
-         npdb == 0 ) then
+    if ( frac == 0.d0 .or. npdb == 0 ) then
       write(*,*) ' ERROR: Could not find fraction (-f), output trajectory (-t), or input PDB file information. '
       call arg_error
       stop
@@ -427,7 +425,7 @@ program mdlovofit
   
   ! Open output files
   
-  if ( .not. mapfrac ) open(20,file=trajfile)
+  if ( .not. mapfrac .and. trajfile /= "NONE" ) open(20,file=trajfile)
   
   if ( mapfrac ) then
     write(*,"('#  FRACTION   RMSD: BEST ALIGNED          OTHER ATOMS            ALL ATOMS          dBEST/dSTEP')")  
@@ -686,7 +684,7 @@ program mdlovofit
     
             ! Apply transformation to all atoms to print file
   
-            write(20,"( a,i8 )") "REMARK FRAME: ", iframe
+            if (trajfile /= "NONE") write(20,"( a,i8 )") "REMARK FRAME: ", iframe
             ic = 0
             do i = 1, nall
               xtemp = xall(i) - xcm 
@@ -704,11 +702,13 @@ program mdlovofit
                 if ( bije_old(ic) <= n_consider ) occup = 1.00
                 beta = dmin1(dsqrt(scores(ic)),99.99d0)
               end if
-              write(20,"( a30,3(f8.3),2(f6.2), a30 )") pdbstring_left(i),&
-                                              xread, yread, zread,&
-                                              occup, beta, pdbstring_right(i)
+              if (trajfile /= "NONE") then
+                write(20,"( a30,3(f8.3),2(f6.2), a30 )") pdbstring_left(i),&
+                                                xread, yread, zread,&
+                                                occup, beta, pdbstring_right(i)
+              end if
             end do
-            write(20,"( a )") "END"
+            if(trajfile /= "NONE") write(20,"( a )") "END"
           end if
     
         end if
@@ -919,7 +919,7 @@ program mdlovofit
         
             ! Apply transformation to all atoms and print aligned trajectory file
     
-            write(20,"( a,i8 )") "REMARK FRAME: ", iframe
+            if(trajfile /= "NONE") write(20,"( a,i8 )") "REMARK FRAME: ", iframe
             ic = 0
             do i = 1, nall
               xtemp = xall(i) - xcm 
@@ -937,11 +937,13 @@ program mdlovofit
                 if ( bije_old(ic) <= n_consider ) occup = 1.d0
                 beta = dmin1(dsqrt(scores(ic)),99.99d0)
               end if
-              write(20,"( a30,3(f8.3),2(f6.2),a30 )") pdbstring_left(i),&
-                                              xread, yread, zread,&
-                                              occup, beta, pdbstring_right(i)
+              if (trajfile /= "NONE") then
+                write(20,"( a30,3(f8.3),2(f6.2),a30 )") pdbstring_left(i),&
+                                                xread, yread, zread,&
+                                                occup, beta, pdbstring_right(i)
+              end if
             end do
-            write(20,"( a )") "END"
+            if (trajfile /= "NONE") write(20,"( a )") "END"
           end if 
     
         end do
@@ -970,7 +972,7 @@ program mdlovofit
   
     end if
   
-    close(20)
+    if(trajfile /= "NONE") close(20)
     exit map_fractions
   
   end do map_fractions

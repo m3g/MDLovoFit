@@ -439,7 +439,7 @@ program mdlovofit
     frac = 0.d0
     av_rmsd_low_last = 0.d0
   end if
-  map_fractions : do while( frac <= 2.d0 )
+  map_fractions : do while( frac <= 1.d0 )
   
     if ( mapfrac ) frac = frac + mapstep
     n_consider = min(nc,int(frac*nc))

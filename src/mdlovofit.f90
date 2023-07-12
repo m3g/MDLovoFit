@@ -101,11 +101,7 @@ program mdlovofit
         i = i + 2
       case ( "-t" ) 
         call getarg(i+1,record)
-        read(record,*,iostat=ioerror) trajfile
-        if ( ioerror /= 0 ) then 
-          write(*,*) ' ERROR reading output trajectory file name. '
-          call arg_error
-        end if
+        trajfile = trim(adjustl(record))
         i = i + 2
       case ( "-perframe" , "-pf" ) 
         printperframe = .true.
@@ -131,11 +127,7 @@ program mdlovofit
         i = i + 2
       case ( "-rmsf" ) 
         call getarg(i+1,record)
-        read(record,*,iostat=ioerror) rmsffile
-        if ( ioerror /= 0 ) then 
-          write(*,*) ' ERROR reading output RMSF file name. '
-          call arg_error
-        end if
+        rmsffile = trim(adjustl(record))
         print_rmsf = .true.
         i = i + 2
       case ( "-atoms" )

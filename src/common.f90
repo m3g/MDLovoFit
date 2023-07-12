@@ -9,17 +9,6 @@ module charsize
   integer, parameter :: charsize1 = 6
 end module charsize
 
-! Function that prints the version
-
-subroutine version()
-
-write(*,*) 
-write(*,*) ' Version 20.0.3'
-write(*,*) 
-
-return 
-end
-
 !
 ! This file contains common functions and subroutines for
 ! all programs. Must be compiled with each of them.

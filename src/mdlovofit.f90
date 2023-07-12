@@ -61,7 +61,7 @@ program mdlovofit
   logical, allocatable :: consider(:)
   
   write(*,"(a)") "#"
-  write(*,"(a)") "# MDLovoFit - Version 20.0.4"
+  write(*,"(a)") "# MDLovoFit - Version 20.1.0"
   write(*,"(a)") "#"
   
   ! Reading input parameters

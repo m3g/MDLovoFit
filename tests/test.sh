@@ -1,7 +1,8 @@
 #!/bin/bash
 cd ..
+cmake .
 make clean
-make devel
+make
 cd ./tests
 ../bin/mdlovofit -f 0.7 -t output.pdb ./data/trajectory.pdb > rmsd.dat
 if [ ! -z `diff -I"Version" rmsd.dat ./results/TEST1.dat` ]; then
